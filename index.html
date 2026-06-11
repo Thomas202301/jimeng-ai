@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>即梦 AI · 文字生图</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-icon">AI</div>
+        <div class="logo-text">
+          <span class="logo-title">即梦</span>
+          <span class="logo-sub">Jimeng AI</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#home" class="active">首页</a>
+        <a href="#create">创作</a>
+        <a href="#gallery">灵感广场</a>
+        <a href="#works">我的作品</a>
+      </nav>
+
+      <div class="nav-right">
+        <button class="btn-ghost">登录</button>
+        <button class="btn-primary">开始创作</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero 区 -->
+  <section id="home" class="hero">
+    <div class="hero-bg">
+      <div class="hero-glow glow-1"></div>
+      <div class="hero-glow glow-2"></div>
+      <div class="hero-glow glow-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-tags">
+        <span class="tag">✨ AI 图像生成</span>
+        <span class="tag">🔥 全新模型上线</span>
+      </div>
+      <h1 class="hero-title">
+        让想象力<span class="gradient-text">落地成画</span>
+      </h1>
+      <p class="hero-sub">输入一段文字，AI 为你创作独一无二的图像作品</p>
+
+      <!-- 快速输入框 -->
+      <div class="quick-input" id="quickInput">
+        <input type="text" id="heroPrompt" placeholder="描述你想要的画面，例如：一只在樱花树下的橘猫..." />
+        <button class="btn-primary btn-lg" onclick="scrollToCreate()">立即创作 →</button>
+      </div>
+
+      <div class="hero-quick">
+        <span>试试这些：</span>
+        <button class="chip" onclick="usePrompt('赛博朋克风格的未来城市，霓虹灯闪烁的街道')">赛博城市</button>
+        <button class="chip" onclick="usePrompt('水彩风格的山间小屋，清晨雾气缭绕')">水彩山间</button>
+        <button class="chip" onclick="usePrompt('油画质感的少女肖像，柔和的光影')">油画肖像</button>
+        <button class="chip" onclick="usePrompt('一只穿着宇航服的柴犬漂浮在星空中')">太空柴犬</button>
+        <button class="chip" onclick="usePrompt('蒸汽朋克风格的机械城堡，齿轮与管道')">蒸汽朋克</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 创作区 -->
+  <section id="create" class="create-section">
+    <div class="section-header">
+      <h2 class="section-title">创作工作台</h2>
+      <p class="section-sub">调整参数，生成你心中的画面</p>
+    </div>
+
+    <div class="create-layout">
+      <!-- 左侧：参数设置 -->
+      <div class="panel panel-settings">
+        <!-- 提示词 -->
+        <div class="setting-group">
+          <div class="setting-header">
+            <label>画面描述</label>
+            <span class="hint">越详细越好</span>
+          </div>
+          <textarea id="promptInput" rows="4" placeholder="描述你想要的画面，例如：夕阳下的海边，一位穿着白色连衣裙的少女漫步在沙滩上，远处有海鸥飞过..."></textarea>
+          <div class="prompt-actions">
+            <button class="btn-link" onclick="randomPrompt()">🎲 随机灵感</button>
+            <span id="promptCount" class="counter">0 / 500</span>
+          </div>
+        </div>
+
+        <!-- 负向提示词 -->
+        <div class="setting-group">
+          <div class="setting-header">
+            <label>不想要的元素</label>
+            <span class="hint">可选</span>
+          </div>
+          <textarea id="negativeInput" rows="2" placeholder="例如：模糊、低质量、水印、变形..."></textarea>
+        </div>
+
+        <!-- 风格选择 -->
+        <div class="setting-group">
+          <div class="setting-header">
+            <label>艺术风格</label>
+          </div>
+          <div class="style-grid" id="styleGrid">
+            <button class="style-card active" data-style="写实照片" data-icon="📷">
+              <span class="style-icon">📷</span>
+              <span class="style-name">写实照片</span>
+            </button>
+            <button class="style-card" data-style="二次元" data-icon="🎌">
+              <span class="style-icon">🎌</span>
+              <span class="style-name">二次元</span>
+            </button>
+            <button class="style-card" data-style="油画" data-icon="🖼️">
+              <span class="style-icon">🖼️</span>
+              <span class="style-name">油画</span>
+            </button>
+            <button class="style-card" data-style="水彩" data-icon="🎨">
+              <span class="style-icon">🎨</span>
+              <span class="style-name">水彩</span>
+            </button>
+            <button class="style-card" data-style="赛博朋克" data-icon="🌆">
+              <span class="style-icon">🌆</span>
+              <span class="style-name">赛博朋克</span>
+            </button>
+            <button class="style-card" data-style="3D渲染" data-icon="🧊">
+              <span class="style-icon">🧊</span>
+              <span class="style-name">3D 渲染</span>
+            </button>
+            <button class="style-card" data-style="国风水墨" data-icon="🏮">
+              <span class="style-icon">🏮</span>
+              <span class="style-name">国风水墨</span>
+            </button>
+            <button class="style-card" data-style="蒸汽朋克" data-icon="⚙️">
+              <span class="style-icon">⚙️</span>
+              <span class="style-name">蒸汽朋克</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 比例选择 -->
+        <div class="setting-group">
+          <div class="setting-header">
+            <label>画面比例</label>
+          </div>
+          <div class="ratio-grid">
+            <button class="ratio-card active" data-ratio="1:1">
+              <div class="ratio-box ratio-1-1"></div>
+              <span>1:1 方形</span>
+            </button>
+            <button class="ratio-card" data-ratio="16:9">
+              <div class="ratio-box ratio-16-9"></div>
+              <span>16:9 横版</span>
+            </button>
+            <button class="ratio-card" data-ratio="9:16">
+              <div class="ratio-box ratio-9-16"></div>
+              <span>9:16 竖版</span>
+            </button>
+            <button class="ratio-card" data-ratio="4:3">
+              <div class="ratio-box ratio-4-3"></div>
+              <span>4:3 经典</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 高级参数 -->
+        <div class="setting-group">
+          <div class="setting-header">
+            <label>高级设置</label>
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-label">
+              <span>创意自由度</span>
+              <span id="cfgValue">7.5</span>
+            </div>
+            <input type="range" id="cfgSlider" min="1" max="20" step="0.5" value="7.5" />
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-label">
+              <span>生成数量</span>
+              <span id="countValue">4 张</span>
+            </div>
+            <div class="count-btns">
+              <button class="count-btn active" data-count="1">1</button>
+              <button class="count-btn" data-count="2">2</button>
+              <button class="count-btn" data-count="4">4</button>
+              <button class="count-btn" data-count="6">6</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-generate" onclick="generateImages()">
+          <span class="gen-icon">✨</span>
+          <span>立即生成</span>
+        </button>
+      </div>
+
+      <!-- 右侧：结果展示 -->
+      <div class="panel panel-preview">
+        <div class="preview-header">
+          <h3>生成结果</h3>
+          <div class="preview-actions">
+            <button class="btn-ghost btn-sm" onclick="downloadAll()" id="downloadAllBtn" style="display:none;">⬇ 下载全部</button>
+          </div>
+        </div>
+
+        <div class="preview-grid" id="previewGrid">
+          <!-- 初始提示 -->
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🎨</div>
+            <h3>还没有作品</h3>
+            <p>在左侧输入描述并选择风格，开始你的 AI 创作之旅</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 灵感广场 -->
+  <section id="gallery" class="gallery-section">
+    <div class="section-header">
+      <h2 class="section-title">灵感广场</h2>
+      <p class="section-sub">看看其他创作者的优秀作品</p>
+    </div>
+
+    <div class="gallery-filter">
+      <button class="filter-btn active">全部</button>
+      <button class="filter-btn">风景</button>
+      <button class="filter-btn">人物</button>
+      <button class="filter-btn">动物</button>
+      <button class="filter-btn">建筑</button>
+      <button class="filter-btn">科幻</button>
+      <button class="filter-btn">插画</button>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </section>
+
+  <!-- 功能亮点 -->
+  <section class="features-section">
+    <div class="section-header">
+      <h2 class="section-title">强大的创作能力</h2>
+      <p class="section-sub">基于先进的 AI 模型，让创意无限延展</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>极速生成</h3>
+        <p>优化的推理架构，数秒内即可完成高质量图像生成</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>精准理解</h3>
+        <p>深度解析你的文字描述，准确还原脑海中的画面</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3>多种风格</h3>
+        <p>写实、二次元、油画、水墨，上百种艺术风格随心切换</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📐</div>
+        <h3>灵活尺寸</h3>
+        <p>支持多种画面比例，适配社交发布与商用场景</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>版本迭代</h3>
+        <p>持续更新的 AI 模型，每次创作都有新惊喜</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h3>高清画质</h3>
+        <p>支持高清增强，细节丰富，让作品质感十足</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="logo">
+          <div class="logo-icon">AI</div>
+          <div class="logo-text">
+            <span class="logo-title">即梦</span>
+            <span class="logo-sub">Jimeng AI</span>
+          </div>
+        </div>
+        <p class="footer-desc">AI 赋能创作，让每一个想法都能被看见</p>
+      </div>
+      <div class="footer-col">
+        <h4>产品</h4>
+        <a href="#">AI 图像生成</a>
+        <a href="#">AI 视频生成</a>
+        <a href="#">风格迁移</a>
+      </div>
+      <div class="footer-col">
+        <h4>资源</h4>
+        <a href="#">使用教程</a>
+        <a href="#">创作灵感</a>
+        <a href="#">API 文档</a>
+      </div>
+      <div class="footer-col">
+        <h4>关于</h4>
+        <a href="#">用户协议</a>
+        <a href="#">隐私政策</a>
+        <a href="#">联系我们</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Jimeng AI · 用 AI 点亮创意
+    </div>
+  </footer>
+
+  <!-- 生成进度遮罩 -->
+  <div class="loading-mask" id="loadingMask">
+    <div class="loading-box">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingTitle">AI 正在创作中...</h3>
+      <div class="loading-progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p id="loadingStep">正在解析提示词...</p>
+    </div>
+  </div>
+
+  <!-- 图片大图预览 -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-content">
+      <img id="lightboxImg" src="" alt="" />
+      <div class="lightbox-close" onclick="closeLightbox(event, true)">×</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
